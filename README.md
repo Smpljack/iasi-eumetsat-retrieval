@@ -1,5 +1,5 @@
 Analysis tool for analysing operational IASI retrieval produced by 
 EUMETSAT. Includes:
-* Reading and plotting (maps + profiles) the NetCDF retrieval data that is available in the EUMETSAT
+* Read and plot (maps + profiles) the NetCDF retrieval data that is available from the EUMETSAT
   data center.
-* Collocating the retrieval data with EUREC4A readiosonde files and doing comparison plots.
+* Collocate the retrieval data with EUREC4A radiosondes or dropsondes and do comparison plots.

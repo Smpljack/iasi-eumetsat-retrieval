@@ -134,10 +134,11 @@ def prepare_iasi_ds_for_collocation(iasi_data):
 
         })
     print("Constraining iasi_data to general EUREC4A region before collocating...")
-    iasi_collocation_ds = iasi_collocation_ds.where(
-        (iasi_data.lat > 6.) & (iasi_data.lat < 18.) &
-        (iasi_data.lon > -90.) & (iasi_data.lon < -45.)
-    )
+    # TODO: CURRENTLY RAISES ISSUE
+    # iasi_collocation_ds = iasi_collocation_ds.where(
+    #     (iasi_collocation_ds.lat > 6.) & (iasi_collocation_ds.lat < 18.) &
+    #     (iasi_collocation_ds.lon > -90.) & (iasi_collocation_ds.lon < -45.)
+    # )
     return iasi_collocation_ds
 
 
