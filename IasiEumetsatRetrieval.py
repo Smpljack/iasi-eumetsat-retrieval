@@ -119,22 +119,19 @@ def prepare_dropsonde_ds_for_collocation(dropsonde_ds):
 
 
 def prepare_iasi_ds_for_collocation(iasi_data):
-    start_date, end_date = get_iasi_start_end_dates(iasi_data)
     iasi_collocation_ds = xr.Dataset(
         {
             'lat': iasi_data.lat,
             'lon': iasi_data.lon,
             'time': (('along_track'),
-                     np.arange(np.datetime64(start_date),
-                               np.datetime64(end_date),
-                               np.timedelta64(8, 's'),
-                               dtype='datetime64')),
+                     np.array(iasi_data['record_start_time'].values, dtype='timedelta64[s]') +
+                     np.array('2000-01-01 00:00:00', dtype='datetime64[s]')),
             'atmospheric_water_vapor': iasi_data.atmospheric_water_vapor,
             'atmospheric_temperature': iasi_data.atmospheric_temperature,
 
         })
-    print("Constraining iasi_data to general EUREC4A region before collocating...")
     # TODO: CURRENTLY RAISES ISSUE
+    # print("Constraining iasi_data to general EUREC4A region before collocating...")
     # iasi_collocation_ds = iasi_collocation_ds.where(
     #     (iasi_collocation_ds.lat > 6.) & (iasi_collocation_ds.lat < 18.) &
     #     (iasi_collocation_ds.lon > -90.) & (iasi_collocation_ds.lon < -45.)
@@ -146,12 +143,11 @@ def collocate_iasi_with_location(iasi_data, collocation_latitudes,
                                  collocation_longitudes, collocation_radius,
                                  profiles_available=False):
     iasi_collocation_ds = prepare_iasi_ds_for_collocation(iasi_data)
-    start_date, end_date = get_iasi_start_end_dates(iasi_data)
     eurec4a_loc_ds = xr.Dataset(
         {
             'lat': collocation_latitudes,
             'lon': collocation_longitudes,
-            'time': np.array([f'{start_date}'], dtype="datetime64[D]")
+            'time': np.array([f'{iasi_collocation_ds["time"][0].values}'], dtype="datetime64[D]")
         }
     )
     collocater = Collocator(threads=4, name='eurec4a_loc_iasi')
@@ -238,3 +234,4 @@ def plot_collocated_dropsonde_profiles(collocations, collocation_indices=None,
     if show_legend:
         axs[2].legend(bbox_to_anchor=(1.1, 1))
     return fig, axs
+
